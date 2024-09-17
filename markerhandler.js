@@ -1,6 +1,6 @@
 var A = ["H", "Li", "Na", "K"]
 var B = ["F", "Cl", "Br", "I"]
-var C = ["o", "S", "Se"]
+var C = ["O", "S", "Se"]
 
 var elementsArray = [];
 
@@ -26,7 +26,7 @@ AFRAME.registerComponent("markerhandler", {
 
     this.el.addEventListener("markerLost", (e) => {
       var elementName = this.el.getAttribute("element_name")
-      var index = indexArray.findIndex(x => x.element_name === elementName)
+      var index = elementsArray.findIndex(x => x.element_name === elementName)
       if(index > -1){
         elementsArray.splice(index, 1)
       }
@@ -42,8 +42,8 @@ AFRAME.registerComponent("markerhandler", {
       var compound = this.getCompound()
 
       if(length === 2){
-        var marker1 = document.querySelector(`marker-${elementsArray[0].barcode_value}`)
-        var marker2 = document.querySelector(`marker-${elementsArray[1].barcode_value}`)
+        var marker1 = document.querySelector(`#marker-${elementsArray[0].barcode_value}`)
+        var marker2 = document.querySelector(`#marker-${elementsArray[1].barcode_value}`)
 
         distance = this.getDistance(marker1, marker2)
         console.log(distance)
@@ -53,9 +53,9 @@ AFRAME.registerComponent("markerhandler", {
           }else{
             messageText.setAttribute("visible", true)
           }
+        }else{
+          messageText.setAttribute("visible", false)
         }
-      }else{
-        messageText.setAttribute("visible", false)
       }
     }
   },
@@ -68,8 +68,9 @@ AFRAME.registerComponent("markerhandler", {
       if(A.includes(al.element_name)){
         var compound = al.element_name
         for(var el of elementsArray){
-          if(B.includes(el.element_name))
+          if(B.includes(el.element_name)){
             compound += el.element_name
+          }
           return {name: compound, value: el.barcode_value}
         }
       }
