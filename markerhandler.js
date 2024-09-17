@@ -8,7 +8,7 @@ AFRAME.registerComponent("markerhandler", {
   init: async function () {
     var compounds = await this.getCompounds();
 
-    this.el.addEventListener("markerFound", (e) => {
+    this.el.addEventListener("markerFound", () => {
       var elementName = this.el.getAttribute("element_name")
       var barcodeValue = this.el.getAttribute("value")
       elementsArray.push({element_name: elementName, barcode_value: barcodeValue})
@@ -24,7 +24,7 @@ AFRAME.registerComponent("markerhandler", {
       atom.setAttribute("visible", true)
     });
 
-    this.el.addEventListener("markerLost", (e) => {
+    this.el.addEventListener("markerLost", () => {
       var elementName = this.el.getAttribute("element_name")
       var index = elementsArray.findIndex(x => x.element_name === elementName)
       if(index > -1){
@@ -70,8 +70,9 @@ AFRAME.registerComponent("markerhandler", {
         for(var el of elementsArray){
           if(B.includes(el.element_name)){
             compound += el.element_name
+            return {name: compound, value: el.barcode_value}
           }
-          return {name: compound, value: el.barcode_value}
+          
         }
       }
     }
@@ -83,8 +84,8 @@ AFRAME.registerComponent("markerhandler", {
       el.setAttribute("visible", false);
     });
     // Mostrar compuesto
-    var compound = document.querySelector(`#${compound.name}-${compound.value}`);
-    compound.setAttribute("visible", true);
+    var compounds = document.querySelector(`#${compound.name}-${compound.value}`);
+    compounds.setAttribute("visible", true);
   },
   getCompounds: function () {
     // Nota: utiliza el servidor de ngrok para obtener los valores JSON
