@@ -45,9 +45,27 @@ AFRAME.registerComponent("markerhandler", {
         var marker1 = document.querySelector(`#marker-${elementsArray[0].barcode_value}`)
         var marker2 = document.querySelector(`#marker-${elementsArray[1].barcode_value}`)
 
-        distance = this.getDistance(marker1, marker2)
+        var distance = this.getDistance(marker1, marker2)
         console.log(distance)
         if(distance < 1.25){
+          if(compound !== undefined){
+            this.showCompound(compound)
+          }else{
+            messageText.setAttribute("visible", true)
+          }
+        }else{
+          messageText.setAttribute("visible", false)
+        }
+      }
+      if(length === 3){
+        var marker1 = document.querySelector(`#marker-${elementsArray[0].barcode_value}`)
+        var marker2 = document.querySelector(`#marker-${elementsArray[1].barcode_value}`)
+        var marker3 = document.querySelector(`#marker-${elementsArray[2].barcode_value}`)
+
+        var distance = this.getDistance(marker1, marker2)
+        var distance2 = this.getDistance(marker1, marker3) //nos quedamos aquí
+        console.log(distance)
+        if(distance < 1.25 && distance2 < 1.25){
           if(compound !== undefined){
             this.showCompound(compound)
           }else{
@@ -63,6 +81,9 @@ AFRAME.registerComponent("markerhandler", {
   getDistance: function (elA, elB) {
       return elA.object3D.position.distanceTo(elB.object3D.position)
   },  
+  countOcurrences: function(arr, val){
+    return arr.reduce((a,v) =>(v.element_name === val ? a + 1: a), 0)
+  },
   getCompound: function () {
     for(var al of elementsArray){
       if(A.includes(al.element_name)){
@@ -70,7 +91,14 @@ AFRAME.registerComponent("markerhandler", {
         for(var el of elementsArray){
           if(B.includes(el.element_name)){
             compound += el.element_name
-            return {name: compound, value: el.barcode_value}
+            return {name: compound, value: al.barcode_value}
+          }
+          if(C.includes(el.element_name)){
+            var count = this.countOcurrences(elementsArray, el.element_name)
+            if(count > 1){
+              compound += count + i.element_name
+              return {name: compound, value: i.barcode_value}
+            }
           }
           
         }
